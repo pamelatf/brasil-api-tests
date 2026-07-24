@@ -1,0 +1,23 @@
+{
+  "banks": {
+    "codigoValido": 1,
+    "codigoInexistente": 999999,
+    "codigoNaoNumerico": "abc",
+    "bordas": [0, -1, 999999999]
+  },
+  "cep": {
+    "valido": "01310930",
+    "validoFormatado": "01310-930",
+    "comZeroAEsquerda": "01001000",
+    "inexistente": "99999999",
+    "curto": "1234567",
+    "naoNumerico": "abcdefgh"
+  },
+  "cnpj": {
+    "valido": "19131243000197",
+    "validoFormatado": "19.131.243/0001-97",
+    "digitoVerificadorInvalido": "19131243000100",
+    "inexistente": "00000000000191",
+    "malFormatado": "123"
+  }
+}
