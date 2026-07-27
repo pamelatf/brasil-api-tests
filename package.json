@@ -1,16 +1,17 @@
 {
   "name": "brasilapi-tests",
-  "version": "1.0.0",
-  "description": "Testes de API da Brasil API baseados na matriz exploratoria VADER",
+  "version": "2.0.0",
+  "description": "Testes de API da BrasilAPI baseados na matriz exploratoria unificada VADER + POISED",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha \"test/**/*.test.js\"",
     "test:banks": "mocha test/banks.test.js",
     "test:cep": "mocha test/cep.test.js",
     "test:cnpj": "mocha test/cnpj.test.js",
     "test:pix": "mocha test/pix.test.js",
-    "test:report": "mocha --reporter mochawesome"
+    "test:report": "mocha \"test/**/*.test.js\" --reporter mochawesome"
   },
   "devDependencies": {
+    "ajv": "^8.17.1",
     "chai": "^4.4.1",
     "dotenv": "^16.4.5",
     "mocha": "^10.4.0",

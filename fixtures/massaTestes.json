@@ -3,21 +3,67 @@
     "codigoValido": 1,
     "codigoInexistente": 999999,
     "codigoNaoNumerico": "abc",
-    "bordas": [0, -1, 999999999]
+    "bordas": [
+      0,
+      -1,
+      999999999
+    ]
   },
   "cep": {
     "valido": "01310930",
     "validoFormatado": "01310-930",
     "comZeroAEsquerda": "01001000",
-    "inexistente": "99999999",
+    "comAcentuacao": "40020000",
     "curto": "1234567",
-    "naoNumerico": "abcdefgh"
+    "longo": "123456789012",
+    "naoNumerico": "abcdefgh",
+    "foraDoPattern": "01310_930",
+    "_comentarioInexistentes": "A inexistência de um CEP não é garantida por ninguém: um provedor pode passar a reconhecê-lo a qualquer momento, como aconteceu com 99999999. Por isso os casos descobrem em tempo de execução qual destes candidatos ainda devolve 404, em vez de assumir um valor fixo.",
+    "candidatosInexistentes": [
+      "00000000",
+      "11111111",
+      "99999998",
+      "98765432",
+      "12345678"
+    ]
   },
   "cnpj": {
     "valido": "19131243000197",
     "validoFormatado": "19.131.243/0001-97",
     "digitoVerificadorInvalido": "19131243000100",
-    "inexistente": "00000000000191",
-    "malFormatado": "123"
+    "malFormatado": "123",
+    "_comentarioInexistentes": "O CNPJ 00.000.000/0001-91, usado como exemplo de 404 na propria documentacao da BrasilAPI, e o CNPJ real do Banco do Brasil e devolve 200. Como a inexistencia de um cadastro nao e garantida por ninguem, os casos testam os candidatos abaixo ate um deles devolver 404. Todos possuem digito verificador valido, calculado pela regra oficial.",
+    "candidatosInexistentes": [
+      "99999999000191",
+      "88888888000191",
+      "77777777000191",
+      "12345678000195"
+    ]
+  },
+  "seguranca": {
+    "payloadsDeInjecao": [
+      "1' OR '1'='1",
+      "../../etc/passwd",
+      "<script>alert(1)</script>",
+      "%00"
+    ],
+    "_comentarioPayloadsCnpj": "Lista reduzida no recurso de CNPJ para não esbarrar no limite de requisições do edge.",
+    "payloadsDeInjecaoCnpj": [
+      "1' OR '1'='1",
+      "../../etc/passwd"
+    ],
+    "termosQueNaoPodemVazar": [
+      "stack",
+      "at Object.",
+      "node_modules",
+      "/var/task",
+      "minhareceita.org",
+      "bcb.gov.br"
+    ]
+  },
+  "desempenho": {
+    "chamadasParalelas": 10,
+    "limiteMedioMs": 3000,
+    "limiteUnitarioMs": 8000
   }
 }

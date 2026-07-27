@@ -1,65 +1,83 @@
 # Brasil API Tests
 
-Suíte de testes automatizados para APIs desenvolvida como parte de um
-desafio da turma da Mentoria 2.0 do Júlio de Lima.
+Suíte de testes automatizados para a [BrasilAPI](https://brasilapi.com.br/),
+desenvolvida como parte de um desafio da turma da Mentoria 2.0 do Júlio de Lima.
 
 ## Introdução
 
-Este projeto foi desenvolvido a partir da utilização do **Assistente de
-Testes de API**, um projeto criado por alunos da mentoria do Júlio de
-Lima com o objetivo de apoiar a criação, organização e execução de
-testes automatizados para APIs.
+Este projeto foi desenvolvido a partir da utilização do **Assistente de Testes de
+API**, um projeto criado por alunos da mentoria com o objetivo de apoiar a
+criação, organização e execução de testes automatizados para APIs.
 
-Como parte de um desafio proposto à turma, o projeto foi utilizado para
-desenvolver uma suíte de testes automatizados para a
-[BrasilAPI](https://brasilapi.com.br/).
+A BrasilAPI é uma API pública que disponibiliza diversos dados relacionados ao
+Brasil. A partir de seus endpoints, foram elaborados e automatizados cenários de
+teste utilizando JavaScript e ferramentas do ecossistema Node.js.
 
-A BrasilAPI é uma API pública que disponibiliza diversos dados
-relacionados ao Brasil. A partir de seus endpoints, foram elaborados e
-automatizados cenários de teste utilizando JavaScript e ferramentas do
-ecossistema Node.js.
+A suíte cobre quatro recursos: bancos, CEP nas versões 1 e 2, CNPJ e
+participantes do PIX.
 
-O projeto tem como foco a aplicação prática de conceitos relacionados a:
+## Heurísticas aplicadas
 
--   Testes de API;
--   Automação de testes;
--   Validação de status codes HTTP;
--   Validação de contratos e schemas;
--   Organização de dados de teste;
--   Reutilização de código;
--   Geração de relatórios de testes;
--   Utilização de inteligência artificial como apoio ao processo de
-    desenvolvimento de testes.
+A primeira versão da suíte foi construída apenas com a heurística **VADER**, que
+olha para o contrato da API e é especialmente boa para encontrar divergências
+entre o que a documentação promete e o que a implementação entrega.
+
+A versão atual acrescenta a heurística **POISED**, que amplia a cobertura para
+frentes que VADER não endereça diretamente: interoperabilidade, escalabilidade e
+qualidade dos dados, além de tratar segurança de forma mais ampla do que apenas
+autenticação e autorização.
+
+As duas heurísticas foram cruzadas em uma matriz única, em
+`docs/matriz_unificada_vader_poised_brasilapi.csv`. Cada caso recebeu um
+identificador próprio no formato `BAPI-nn`, uma coluna `origem_ids` que aponta
+para o identificador VADER original, quando ele existe, ou para a categoria
+POISED que motivou o caso, quando ele é novo, e uma coluna `Situação` que
+informa se o caso passa ou se está vermelho de propósito.
+
+Distribuição dos 76 casos:
+
+| Origem | Casos |
+|---|---|
+| Herdados da matriz VADER | 48 |
+| Novos, motivados por POISED | 28 |
+
+| Categoria POISED | Casos |
+|---|---|
+| P — Parameter | 16 |
+| E — Error | 15 |
+| D — Data | 13 |
+| O — Output | 12 |
+| S — Security | 10 |
+| I — Interoperability | 10 |
 
 ## Tecnologias utilizadas
 
--   **JavaScript** --- linguagem utilizada no desenvolvimento dos
-    testes;
--   **Node.js** --- ambiente de execução da aplicação;
--   **Mocha** --- framework utilizado para estruturação e execução dos
-    testes;
--   **Chai** --- biblioteca utilizada para asserções;
--   **Supertest** --- biblioteca utilizada para realizar requisições
-    HTTP;
--   **Ajv** --- biblioteca utilizada para validação de schemas JSON;
--   **dotenv** --- gerenciamento de variáveis de ambiente;
--   **Mochawesome** --- geração de relatórios de execução dos testes;
--   **Git e GitHub** --- controle de versão e hospedagem do código.
+- **JavaScript** e **Node.js** — linguagem e ambiente de execução
+- **Mocha** — estruturação e execução dos testes
+- **Chai** — asserções
+- **Supertest** — requisições HTTP
+- **Ajv** — validação dos corpos de resposta contra os schemas JSON da spec
+- **dotenv** — gerenciamento de variáveis de ambiente
+- **Mochawesome** — geração de relatórios de execução
+- **Git e GitHub** — controle de versão e hospedagem
 
 ## Estrutura do repositório
 
-``` text
+```text
 brasil-api-tests/
 │
 ├── docs/
-│   └── casos_teste_vader_brasilapi.csv
+│   ├── matriz_unificada_vader_poised_brasilapi.csv
+│   ├── casos_teste_vader_brasilapi.csv
+│   └── correcoes_aplicadas.md
 │
 ├── fixtures/
 │   └── massaTestes.json
 │
 ├── helpers/
 │   ├── cliente.js
-│   └── schemas.js
+│   ├── schemas.js
+│   └── metricas.js
 │
 ├── test/
 │   ├── banks.test.js
@@ -75,185 +93,76 @@ brasil-api-tests/
 └── README.md
 ```
 
-## Objetivo de cada grupo de arquivos
-
 ### `docs/`
 
-Contém documentos relacionados à especificação e organização dos casos
-de teste.
+`matriz_unificada_vader_poised_brasilapi.csv` é a matriz vigente, com os 76 casos
+cruzando as duas heurísticas. O arquivo é CSV em UTF-8 separado por ponto e
+vírgula, no mesmo padrão das demais matrizes do projeto.
 
-#### `casos_teste_vader_brasilapi.csv`
+`casos_teste_vader_brasilapi.csv` é a matriz VADER original, mantida como
+histórico da primeira rodada.
 
-Arquivo utilizado para documentar os casos de teste definidos para os
-endpoints da BrasilAPI.
-
-A documentação dos casos de teste serve como base para a implementação e
-organização dos cenários automatizados.
-
-------------------------------------------------------------------------
+`correcoes_aplicadas.md` registra os defeitos encontrados na suíte anterior, a
+correção aplicada em cada um e a origem das evidências usadas para decidir.
 
 ### `fixtures/`
 
-Contém os dados utilizados como massa de teste.
-
-#### `massaTestes.json`
-
-Armazena dados que podem ser utilizados pelos testes automatizados,
-permitindo centralizar e reutilizar informações de teste.
-
-A utilização de fixtures ajuda a:
-
--   Evitar a duplicação de dados nos arquivos de teste;
--   Facilitar a manutenção da massa de testes;
--   Separar os dados de teste da lógica de execução;
--   Reutilizar informações em diferentes cenários.
-
-------------------------------------------------------------------------
+`massaTestes.json` centraliza a massa de teste. Além dos dados de cada recurso,
+o arquivo traz os payloads usados nos casos de segurança, a lista de termos que
+não podem vazar em nenhuma resposta e os limites acordados de tempo de resposta
+e de concorrência.
 
 ### `helpers/`
 
-Contém funções e recursos auxiliares utilizados pelos testes.
+`cliente.js` centraliza a configuração das requisições. A URL base nunca é
+escrita direto no teste.
 
-#### `cliente.js`
+`schemas.js` traz os schemas JSON transcritos da especificação OpenAPI da
+BrasilAPI e a função `validarContrato`, que valida um corpo de resposta com Ajv e
+lista todos os desvios encontrados. Também expõe `registrarLacuna`, usada nos
+casos que documentam uma divergência sem falhar o teste.
 
-Centraliza a configuração e/ou execução das requisições realizadas
-contra a API.
-
-A utilização de um cliente compartilhado ajuda a evitar a repetição de
-configurações comuns entre os diferentes arquivos de teste.
-
-------------------------------------------------------------------------
-
-#### `schemas.js`
-
-Contém os schemas utilizados para validar a estrutura das respostas da
-API.
-
-A validação de schemas permite verificar se os dados retornados possuem
-a estrutura esperada, além da validação dos status codes e dos valores
-retornados.
-
-------------------------------------------------------------------------
+`metricas.js` reúne os utilitários dos casos POISED de dados: medição de tempo,
+disparo de chamadas em paralelo, detecção de texto mal codificado e busca de
+valores duplicados em uma lista.
 
 ### `test/`
 
-Contém os testes automatizados organizados de acordo com os endpoints ou
-recursos da API que estão sendo validados.
-
-#### `banks.test.js`
-
-Contém os testes relacionados aos endpoints de bancos da BrasilAPI.
-
-------------------------------------------------------------------------
-
-#### `cep.test.js`
-
-Contém os testes relacionados à consulta de CEP.
-
-Os cenários podem validar, por exemplo:
-
--   Consultas com CEP válido;
--   Consultas com CEP inválido;
--   Status codes retornados;
--   Estrutura da resposta da API.
-
-------------------------------------------------------------------------
-
-#### `cnpj.test.js`
-
-Contém os testes relacionados à consulta de CNPJ.
-
-------------------------------------------------------------------------
-
-#### `pix.test.js`
-
-Contém os testes relacionados aos endpoints de informações de
-instituições relacionadas ao Pix.
-
-------------------------------------------------------------------------
-
-### `.env.example`
-
-Arquivo de exemplo das variáveis de ambiente necessárias para a execução
-do projeto.
-
-Esse arquivo serve como modelo para a criação do arquivo `.env` local.
-
-Informações sensíveis, como tokens, senhas e credenciais, não devem ser
-armazenadas no repositório.
-
-------------------------------------------------------------------------
-
-### `.gitignore`
-
-Define arquivos e diretórios que não devem ser versionados pelo Git.
-
-Entre os itens ignorados estão:
-
--   `node_modules/`;
--   `.env`;
--   Relatórios gerados automaticamente;
--   Arquivos temporários.
-
-------------------------------------------------------------------------
-
-### `.mocharc.json`
-
-Contém as configurações utilizadas pelo Mocha para a execução dos testes
-automatizados.
-
-------------------------------------------------------------------------
-
-### `package.json`
-
-Contém as informações do projeto, suas dependências e os scripts
-utilizados para executar os testes.
-
-------------------------------------------------------------------------
-
-### `package-lock.json`
-
-Registra as versões específicas das dependências instaladas no projeto.
-
-Esse arquivo ajuda a garantir maior consistência na instalação das
-dependências em diferentes ambientes.
+Um arquivo por recurso. Cada caso é nomeado com o identificador da matriz e, entre
+parênteses, sua origem, no formato `BAPI-01 (VADER-001)` para os casos herdados e
+`BAPI-17 (POISED-I)` para os casos novos. Isso permite ir do resultado da execução
+para a linha da matriz sem consulta intermediária.
 
 ## Instalação
 
 ### Pré-requisitos
 
-Antes de iniciar, é necessário ter instalado:
-
--   Node.js;
--   npm;
--   Git.
+Node.js, npm e Git.
 
 ### 1. Clone o repositório
 
-``` bash
+```bash
 git clone https://github.com/pamelatf/brasil-api-tests.git
 ```
 
 ### 2. Acesse o diretório do projeto
 
-``` bash
+```bash
 cd brasil-api-tests
 ```
 
 ### 3. Instale as dependências
 
-``` bash
+```bash
 npm install
 ```
 
 ### 4. Configure as variáveis de ambiente
 
-Crie um arquivo `.env` na raiz do projeto utilizando o `.env.example`
-como referência.
+Crie um arquivo `.env` na raiz do projeto utilizando o `.env.example` como
+referência:
 
-Exemplo:
-
-``` env
+```env
 BASE_URL=https://brasilapi.com.br/api
 ```
 
@@ -261,46 +170,55 @@ O arquivo `.env` não deve ser versionado.
 
 ## Execução dos testes
 
-Para executar a suíte de testes automatizados, utilize:
-
-``` bash
-npm test
+```bash
+npm test              # suíte completa
+npm run test:banks    # apenas bancos
+npm run test:cep      # apenas CEP v1 e v2
+npm run test:cnpj     # apenas CNPJ
+npm run test:pix      # apenas participantes do PIX
+npm run test:report   # execução com relatório Mochawesome
 ```
 
-Esse comando executará os testes configurados no projeto utilizando o
-Mocha.
+## Como ler o resultado da execução
 
-Os testes podem validar diferentes aspectos das respostas da API, como:
+**A suíte não fica verde, e isso é intencional.** Seis casos falham de propósito.
 
--   Status codes HTTP;
--   Corpo das respostas;
--   Estrutura dos dados retornados;
--   Schemas JSON;
--   Comportamentos esperados para diferentes cenários.
+Nesses seis, o teste está certo e a API está errada: são defeitos confirmados da
+BrasilAPI, fora do alcance deste projeto para corrigir. Eles funcionam como um
+relatório permanente, que volta a aparecer a cada execução até que o problema
+seja resolvido na origem. No código, cada um traz um comentário marcando
+`DEFEITO CONFIRMADO DA API - falha esperada`, e na matriz a coluna `Situação`
+registra o mesmo.
 
-## Relatórios de testes
+| Caso | Defeito |
+|---|---|
+| BAPI-07 e BAPI-21 | `/banks/v1` devolve itens com `code` nulo e `code` repetido, violando o schema `Bank` |
+| BAPI-40 | `/cep/v2` devolve `location.coordinates` sem `longitude` nem `latitude` |
+| BAPI-68, BAPI-72 e BAPI-73 | `/pix/v1/participants` devolve linhas sem ISPB e com `tipo_participacao` vazio |
 
-O projeto utiliza o **Mochawesome** para geração de relatórios de
-execução dos testes.
+O detalhamento de cada um, incluindo a linha de código da BrasilAPI que causa o
+problema do PIX, está em `docs/correcoes_aplicadas.md`.
 
-Os relatórios gerados são mantidos fora do controle de versão por meio
-do arquivo `.gitignore`.
+Outros três casos seguem convenção diferente. BAPI-67, BAPI-69 e BAPI-70 também
+tratam de defeitos confirmados, mas fixam o comportamento atual em vez de exigir
+o correto. Assim ficam verdes hoje e falham no dia em que a API for corrigida,
+avisando que a matriz precisa ser atualizada. Uma falha nesses três é boa notícia.
+
+Além de passar ou falhar, vários casos imprimem no terminal uma linha começando
+com `[LACUNA BAPI-nn]`. Essas linhas não indicam falha: são divergências entre a
+documentação e o comportamento observado, registradas para análise posterior.
+Elas aparecem apenas no terminal, não no relatório HTML, porque o Mochawesome não
+captura `console.log` sem a biblioteca `mochawesome/addContext`.
 
 ## Objetivo do projeto
 
-O objetivo deste projeto é aplicar, na prática, conceitos de automação
-de testes de API e explorar a utilização de inteligência artificial como
-apoio ao processo de desenvolvimento de uma suíte de testes.
-
-O projeto também representa uma experiência prática de aprendizado e
-colaboração dentro da Mentoria 2.0 do Júlio de Lima, utilizando um
-desafio da turma para transformar os conhecimentos adquiridos em um
-projeto de automação de testes.
+Aplicar, na prática, conceitos de automação de testes de API e explorar a
+utilização de inteligência artificial como apoio ao processo de desenvolvimento
+de uma suíte de testes, usando duas heurísticas complementares de teste
+exploratório de API.
 
 ## Créditos
 
-Projeto desenvolvido como parte de um desafio da turma da Mentoria 2.0
-do Júlio de Lima.
-
-O projeto teve como base a utilização do **Assistente de Testes de
-API**, desenvolvido por alunos da mentoria.
+Projeto desenvolvido como parte de um desafio da turma da Mentoria 2.0 do Júlio
+de Lima, com base no **Assistente de Testes de API** desenvolvido por alunos da
+mentoria.
